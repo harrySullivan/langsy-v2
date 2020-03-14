@@ -13,7 +13,9 @@ const preload = fs.readdirSync("../books-tokenized").map(async bookfile => {
 })
 
 const findInBooks = (word) => {
-	return Object.keys(booksCache).map((key) => {
+	word = word.replace('\r', '')
+	console.log(word)
+	const locations = Object.keys(booksCache).map((key) => {
 		const bookContent =  booksCache[key]
 
 		const locations = bookContent.map((line, index) => line.indexOf(word) !== -1 ? index : null).filter(x => x !== null)
@@ -21,6 +23,7 @@ const findInBooks = (word) => {
 		data[key] = locations
 		return data
 	})
+	return locations
 }
 
 Promise.all(preload).then(() => {
