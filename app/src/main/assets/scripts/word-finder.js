@@ -16,7 +16,10 @@ const findInBooks = (word) => {
 	return Object.keys(booksCache).map((key) => {
 		const bookContent =  booksCache[key]
 
-		return bookContent.map((line, index) => line.indexOf(word) !== -1 ? index : null).filter(x => x !== null)
+		const locations = bookContent.map((line, index) => line.indexOf(word) !== -1 ? index : null).filter(x => x !== null)
+		var data = {}
+		data[key] = locations
+		return data
 	})
 }
 
@@ -26,7 +29,8 @@ Promise.all(preload).then(() => {
 		fs.readFile(`../language-content/${dir}/words.txt`, (err, content) => {
 			const words = content.toString().split('\n')
 			const locations = words.map(word => { return findInBooks(word) })
-			// fs.writeFile(`../language-content/${dir}/locations.txt`, locations.join('\n'), console.log)
+			const formattedLocations = locations.map(l => JSON.stringify(l))
+			fs.writeFile(`../language-content/${dir}/locations.txt`, formattedLocations.join('\n'), console.log)
 		})
 	})
 })
